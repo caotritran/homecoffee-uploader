@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Authorization</title>
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header><img src="icon.png" alt=""><a href="./">HomeCoffee Uploader</a></header>
+  <h1 id="title">Authorization</h1>
+  <div class="card" id="box">
+    <p id="msg">Waiting for TikTok…</p>
+  </div>
+  <p class="muted">This page runs entirely in your browser. The code is not sent or stored anywhere. Copy it back to your upload script; it can be used once and expires in a few minutes.</p>
+  <nav><a href="./">Home</a><a href="privacy.html">Privacy Policy</a></nav>
+</main>
+<script>
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var box = document.getElementById("box");
+    var title = document.getElementById("title");
+    var code = q.get("code");
+    var err = q.get("error");
+    box.textContent = "";
+    if (code) {
+      title.textContent = "Authorized ✓";
+      var p = document.createElement("p");
+      p.textContent = "Authorization code" + (q.get("state") ? " (state: " + q.get("state") + ")" : "") + ":";
+      var c = document.createElement("code");
+      c.id = "code";
+      c.textContent = code;
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = "Copy code";
+      b.onclick = function () {
+        navigator.clipboard.writeText(code).then(function () { b.textContent = "Copied ✓"; },
+          function () { b.textContent = "Select and copy manually"; });
+      };
+      box.append(p, c, b);
+    } else if (err) {
+      title.textContent = "Authorization failed";
+      var e = document.createElement("p");
+      e.textContent = err + (q.get("error_description") ? ": " + q.get("error_description") : "");
+      box.append(e);
+    } else {
+      var n = document.createElement("p");
+      n.textContent = "No authorization code in this URL. Start the sign-in from the upload script.";
+      box.append(n);
+    }
+  })();
+</script>
+</body>
+</html>
